@@ -19,6 +19,7 @@ Append dependency into composer.json
 ```
 
 ## Usage
+Create a TTL index on 'created_at' field in mongodb
 ```php
 require_once('MongoSession.php');
 
