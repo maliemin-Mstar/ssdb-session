@@ -1,5 +1,5 @@
 {
-	"name": "maliemin-Mstar/MongoSession",
+	"name": "maliemin/mongo-session",
 	"description": "A PHP MongoDB Session Handler",
 	"license": "MIT",
 	"authors": [
