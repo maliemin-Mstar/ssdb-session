@@ -23,9 +23,9 @@ Append dependency into composer.json
 require_once('MongoSession.php');
 
 $handler = new MySessionHandler(
-	(new MongoClient())->selectCollection('local', 'session'), 
-	isset($_COOKIE['session_name']) ? $_COOKIE['session_name'] : null,
-	['session_name', 86400 * 365, '/', '.example.com', null, true]
+	(new MongoClient())->selectCollection('local', 'session'), //collection
+	isset($_COOKIE['session_name']) ? $_COOKIE['session_name'] : null, //session id
+	['session_name', 86400 * 365, '/', '.example.com', null, true] //parameters for setcookie function
 );
 
 session_set_save_handler($handler, true);

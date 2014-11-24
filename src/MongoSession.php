@@ -1,4 +1,6 @@
 <?php
+namespace MongoSession;
+
 class MongoSession implements \SessionHandlerInterface {
 	protected $_collection = null;
 
