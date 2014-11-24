@@ -21,9 +21,9 @@ Append dependency into composer.json
 ## Usage
 Create a TTL index on 'created_at' field in mongodb
 ```php
-require_once('MongoSession.php');
+use MongoSession\MongoSession;
 
-$handler = new MySessionHandler(
+$handler = new MongoSession(
 	(new MongoClient())->selectCollection('local', 'session'), //collection
 	isset($_COOKIE['session_name']) ? $_COOKIE['session_name'] : null, //session id
 	['session_name', 86400 * 365, '/', '.example.com', null, true] //parameters for setcookie function
