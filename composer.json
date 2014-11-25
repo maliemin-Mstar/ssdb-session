@@ -1,6 +1,6 @@
 {
-	"name": "maliemin/mongo-session",
-	"description": "A PHP MongoDB Session Handler",
+	"name": "maliemin/ssdb-session",
+	"description": "A PHP SSDB Session Handler",
 	"license": "MIT",
 	"authors": [
 		{
@@ -10,9 +10,9 @@
 	],
 	"minimum-stability": "stable",
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.5.1"
 	},
 	"autoload": {
-		"psr-4": { "MongoSession\\": "src/" }
+		"psr-4": { "SSDBSession\\": "src/" }
 	}
 }
