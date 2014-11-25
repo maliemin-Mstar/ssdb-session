@@ -10,7 +10,8 @@
 	],
 	"minimum-stability": "stable",
 	"require": {
-		"php": ">=5.5.1"
+		"php": ">=5.5.1",
+		"ssdb/phpssdb": "dev-master"
 	},
 	"autoload": {
 		"psr-4": { "SSDBSession\\": "src/" }
