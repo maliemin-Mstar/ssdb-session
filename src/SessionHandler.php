@@ -25,8 +25,7 @@ class SessionHandler implements \SessionHandlerInterface {
 
 		$this->_session_data[$session_id] = '';
 
-		$this->_ssdb->set($session_id, '');
-		$this->_ssdb->expire($session_id, $this->_ttl);
+		$this->_ssdb->setx($session_id, '', $this->_ttl);
 
 		return (string)$session_id;
 	}
@@ -59,16 +58,17 @@ class SessionHandler implements \SessionHandlerInterface {
 			if ($this->_session_data[$session_id] !== $session_data) {
 				$this->_session_data[$session_id] = $session_data;
 
-				$this->_ssdb->set($session_id, $session_data);
+				$this->_ssdb->setx($session_id, $session_data, $this->_ttl);
+			}
+			else {
+				$this->_ssdb->expire($session_id, $this->_ttl);
 			}
 		}
 		else {
 			$this->_session_data[$session_id] = $session_data;
 
-			$this->_ssdb->set($session_id, $session_data);
+			$this->_ssdb->setx($session_id, $session_data, $this->_ttl);
 		}
-
-		$this->_ssdb->expire($session_id, $this->_ttl);
 
 		return true;
 	}
