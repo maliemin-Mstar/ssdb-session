@@ -1,11 +1,11 @@
 MongoSession
 ====
 
-A PHP MongoDB Session Handler.
+A PHP SSDB Session Handler.
 
 ## Dependency
-* PHP 5.4+
-* 64-bit Linux System
+* PHP 5.5+
+* [ssdb/phpssdb](https://github.com/ssdb/phpssdb)
 
 ## Installation
 ```
@@ -13,21 +13,16 @@ Append dependency into composer.json
     ...
     "require": {
         ...
-        "maliemin/mongo-session": "dev-master"
+        "maliemin/ssdb-session": "dev-master"
     }
     ...
 ```
 
 ## Usage
-Create a TTL index on 'created_at' field in mongodb
 ```php
-use MongoSession\MongoSession;
+$ssdb = new SSDB\Client('127.0.0.1', 8888);
 
-$handler = new MongoSession(
-	(new MongoClient())->selectCollection('local', 'session'), //collection
-	isset($_COOKIE['session_name']) ? $_COOKIE['session_name'] : null, //session id
-	['session_name', 86400 * 365, '/', '.example.com', null, true] //parameters for setcookie function
-);
+$handler = new SSDBSession\SessionHandler($ssdb);
 
 session_set_save_handler($handler, true);
 
