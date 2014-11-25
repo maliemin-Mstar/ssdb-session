@@ -6,6 +6,10 @@ class SessionHandler implements \SessionHandlerInterface {
 
 	protected $_ssdbTTL;
 
+	protected $_create_sid = false;
+
+	protected $_session_data;
+
 	public function __construct($ssdb, $ttl = 60) {
 		$this->_ssdb = $ssdb;
 		$this->_ssdbTTL = $ttl;
@@ -16,6 +20,8 @@ class SessionHandler implements \SessionHandlerInterface {
 	}
 
 	public function create_sid() {
+		$this->_create_sid = true;
+
 		do{
 			$session_id = mt_rand(0, PHP_INT_MAX);
 		}
@@ -39,14 +45,19 @@ class SessionHandler implements \SessionHandlerInterface {
 	}
 
 	public function read($session_id) {
+		if ($this->_create_sid)
+			return $this->_session_data = '';
+
 		$session_data = $this->_ssdb->get($session_id)->data;
 
-		return $session_data === null ? '' : $session_data;
+		return $this->_session_data = ($session_data === null ? '' : $session_data);
 	}
 
 	public function write($session_id, $session_data) {
-		$this->_ssdb->set($session_id, $session_data);
-		$this->_ssdb->expire($session_id, $this->_ssdbTTL);
+		if ($this->_session_data !== $session_data) {
+			$this->_ssdb->set($session_id, $session_data);
+			$this->_ssdb->expire($session_id, $this->_ssdbTTL);
+		}
 
 		return true;
 	}
