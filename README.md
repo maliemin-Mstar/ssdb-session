@@ -1,4 +1,4 @@
-MongoSession
+ssdb-session
 ====
 
 A PHP SSDB Session Handler.
