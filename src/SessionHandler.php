@@ -4,15 +4,13 @@ namespace SSDBSession;
 class SessionHandler implements \SessionHandlerInterface {
 	protected $_ssdb = null;
 
-	protected $_ssdbTTL;
+	protected $_ttl;
 
-	protected $_create_sid = false;
+	protected $_session_data = [];
 
-	protected $_session_data;
-
-	public function __construct($ssdb, $ttl = 60) {
+	public function __construct($ssdb, $ttl = 1440) {
 		$this->_ssdb = $ssdb;
-		$this->_ssdbTTL = $ttl;
+		$this->_ttl = $ttl;
 	}
 
 	public function close() {
@@ -20,12 +18,15 @@ class SessionHandler implements \SessionHandlerInterface {
 	}
 
 	public function create_sid() {
-		$this->_create_sid = true;
-
 		do{
 			$session_id = mt_rand(0, PHP_INT_MAX);
 		}
 		while($this->_ssdb->exists($session_id)->data);
+
+		$this->_session_data[$session_id] = '';
+
+		$this->_ssdb->set($session_id, '');
+		$this->_ssdb->expire($session_id, $this->_ttl);
 
 		return (string)$session_id;
 	}
@@ -45,19 +46,29 @@ class SessionHandler implements \SessionHandlerInterface {
 	}
 
 	public function read($session_id) {
-		if ($this->_create_sid)
-			return $this->_session_data = '';
+		if (isset($this->_session_data[$session_id]))
+			return $this->_session_data[$session_id];
 
 		$session_data = $this->_ssdb->get($session_id)->data;
 
-		return $this->_session_data = ($session_data === null ? '' : $session_data);
+		return $this->_session_data[$session_id] = ($session_data === null ? '' : $session_data);
 	}
 
 	public function write($session_id, $session_data) {
-		if ($this->_session_data !== $session_data) {
-			$this->_ssdb->set($session_id, $session_data);
-			$this->_ssdb->expire($session_id, $this->_ssdbTTL);
+		if (isset($this->_session_data[$session_id])) {
+			if ($this->_session_data[$session_id] !== $session_data) {
+				$this->_session_data[$session_id] = $session_data;
+
+				$this->_ssdb->set($session_id, $session_data);
+			}
 		}
+		else {
+			$this->_session_data[$session_id] = $session_data;
+
+			$this->_ssdb->set($session_id, $session_data);
+		}
+
+		$this->_ssdb->expire($session_id, $this->_ttl);
 
 		return true;
 	}
