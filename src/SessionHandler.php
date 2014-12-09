@@ -54,15 +54,8 @@ class SessionHandler implements \SessionHandlerInterface {
 	}
 
 	public function write($session_id, $session_data) {
-		if (isset($this->_session_data[$session_id])) {
-			if ($this->_session_data[$session_id] !== $session_data) {
-				$this->_session_data[$session_id] = $session_data;
-
-				$this->_ssdb->setx($session_id, $session_data, $this->_ttl);
-			}
-			else {
+		if (isset($this->_session_data[$session_id]) && $this->_session_data[$session_id] === $session_data) {
 				$this->_ssdb->expire($session_id, $this->_ttl);
-			}
 		}
 		else {
 			$this->_session_data[$session_id] = $session_data;
